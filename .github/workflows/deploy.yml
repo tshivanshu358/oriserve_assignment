@@ -34,7 +34,8 @@ jobs:
             ssh -i /tmp/ssh_key ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com -o StrictHostKeyChecking=no << EOF  
             sudo apt update
             sudo snap install go --channel=1.21/stable --classic
-            git clone https://github.com/tshivanshu358/oriserve_assignment.git          
+            git clone https://github.com/tshivanshu358/oriserve_assignment.git   
+            cd oriserve_assignment
             go run main.go        
             EOF
 
