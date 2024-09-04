@@ -8,27 +8,32 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dependencies
         run: go mod download
 
-      - name: Build and deploy
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
-          PEM_CONTENT: ${{ secrets.PEM_CONTENT }}
+      - name: Build the Go application
+        run: go build -o main main.go
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PEM_CONTENT }}  # Your PEM key stored in GitHub Secrets
+
+      - name: Deploy application to EC2
         run: |
-          go build -o main main.go
-          scp main ec2-user@${INSTANCE_ID}:/home/ec2-user/
-          ssh ec2-user@${INSTANCE_ID} '
+          scp -o StrictHostKeyChecking=no main ec2-user@${{ secrets.INSTANCE_ID }}:/home/ec2-user/
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_ID }} << 'EOF'
             sudo systemctl stop nginx
-            sudo mv /home/ec2-user/main /usr/share/nginx/html/
+            sudo mv /home/ec2-user/main /usr/share/nginx/html/main
             sudo systemctl start nginx
-          '
+          EOF
 
       - name: Verify deployment
-        run: curl http://${INSTANCE_ID}:9090
+        run: curl http://${{ secrets.INSTANCE_ID }}:80
+
+
