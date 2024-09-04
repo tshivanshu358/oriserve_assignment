@@ -33,7 +33,7 @@ jobs:
         run: |          
             ssh -i /tmp/ssh_key ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com -o StrictHostKeyChecking=no << EOF          
             git clone https://github.com/tshivanshu358/oriserve_assignment.git          
-            ./main          
+            go run main.go        
             EOF
 
       - name: Verify deployment
