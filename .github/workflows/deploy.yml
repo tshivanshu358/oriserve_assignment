@@ -24,12 +24,17 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.PEM_CONTENT }}  # Your PEM key stored in GitHub Secrets
 
-      - name: Deploy application to EC2
+      - name: Create temporary SSH key file
         run: |
-          ssh -i ${{ secrets.PEM_CONTENT }} ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com
-          git clone https://github.com/tshivanshu358/oriserve_assignment.git
-          ./main
-          EOF
+             echo "$PEM_CONTENT" > /tmp/ssh_key
+             chmod 600 /tmp/ssh_key
+
+      - name: Deploy application to EC2       
+        run: |          
+            ssh -i /tmp/ssh_key ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com -o StrictHostKeyChecking=no << EOF          
+            git clone https://github.com/tshivanshu358/oriserve_assignment.git          
+            ./main          
+            EOF
 
       - name: Verify deployment
         run: curl http://${{ secrets.INSTANCE_ID }}:80
