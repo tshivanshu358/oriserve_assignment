@@ -20,10 +20,11 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
+          PEM_CONTENT: ${{ secrets.PEM_CONTENT }}
         run: |
           go build -o main main.go
-          scp main ec2-user@${INSTANCE_ID}:/home/ec2-user/
-          ssh ec2-user@${INSTANCE_ID} '
+          scp -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i <(echo "$PEM_CONTENT") main ec2-user@${INSTANCE_ID}:/home/ec2-user/
+          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i <(echo "$PEM_CONTENT") ec2-user@${INSTANCE_ID} '
             sudo systemctl stop nginx
             sudo mv /home/ec2-user/main /usr/share/nginx/html/
             sudo systemctl start nginx
