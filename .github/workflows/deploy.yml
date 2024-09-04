@@ -23,8 +23,8 @@ jobs:
           PEM_CONTENT: ${{ secrets.PEM_CONTENT }}
         run: |
           go build -o main main.go
-          scp -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i <(echo "$PEM_CONTENT") main ec2-user@${INSTANCE_ID}:/home/ec2-user/
-          ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i <(echo "$PEM_CONTENT") ec2-user@${INSTANCE_ID} '
+          scp main ec2-user@${INSTANCE_ID}:/home/ec2-user/
+          ssh ec2-user@${INSTANCE_ID} '
             sudo systemctl stop nginx
             sudo mv /home/ec2-user/main /usr/share/nginx/html/
             sudo systemctl start nginx
