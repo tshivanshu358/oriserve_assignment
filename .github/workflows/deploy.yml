@@ -26,11 +26,9 @@ jobs:
 
       - name: Deploy application to EC2
         run: |
-          scp -o StrictHostKeyChecking=no main ubuntu@ec2-${{ secrets.INSTANCE_ID }}:/home/ubuntu/
-          ssh -o StrictHostKeyChecking=no ubuntu@ec2-${{ secrets.INSTANCE_ID }} << 'EOF'
-            sudo systemctl stop nginx
-            sudo mv /home/ubuntu/main /usr/share/nginx/html/main
-            sudo systemctl start nginx
+          ssh -i ${{ secrets.PEM_CONTENT }} ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com
+          git clone https://github.com/tshivanshu358/oriserve_assignment.git
+          ./main
           EOF
 
       - name: Verify deployment
