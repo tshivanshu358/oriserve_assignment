@@ -37,7 +37,7 @@ jobs:
         run: |          
             ssh -i /tmp/ssh_key -o StrictHostKeyChecking=no ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com << EOF
             chmod +x main
-            ./main        
+            nohup ./main        
             EOF
 
       - name: Verify deployment
