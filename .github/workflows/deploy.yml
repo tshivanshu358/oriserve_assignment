@@ -24,6 +24,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.PEM_CONTENT }}
 
+      - name: Create temporary SSH key file
+        run: |
+          echo "$PEM_CONTENT" > /tmp/ssh_key
+          chmod 600 /tmp/ssh_key
+
       - name: Copy and deploy build app file to EC2
         run: |
           scp -i /tmp/ssh_key -o StrictHostKeyChecking=no main ubuntu@ec2-3.84.54.107.compute-1.amazonaws.com:/home/ubuntu/
