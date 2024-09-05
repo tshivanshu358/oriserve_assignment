@@ -29,17 +29,18 @@ jobs:
              echo "$PEM_CONTENT" > /tmp/ssh_key
              chmod 600 /tmp/ssh_key
 
-      - name: Deploy application to EC2       
+      - name: Copy and deploy build app file to EC2
+        run: |
+              scp -i /tmp/ssh_key -o StrictHostKeyChecking=no main ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com:/home/ubuntu/
+
+      - name: Running application to EC2       
         run: |          
-            ssh -i /tmp/ssh_key ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com -o StrictHostKeyChecking=no << EOF  
-            sudo apt update
-            sudo snap install go --channel=1.21/stable --classic
-            git clone https://github.com/tshivanshu358/oriserve_assignment.git   
-            cd oriserve_assignment
-            go run main.go        
+            ssh -i /tmp/ssh_key -o StrictHostKeyChecking=no ubuntu@ec2-54-237-192-232.compute-1.amazonaws.com << EOF
+            chmod +x main
+            ./main        
             EOF
 
       - name: Verify deployment
-        run: curl http://${{ secrets.INSTANCE_ID }}:80
+        run: curl http://${{ secrets.INSTANCE_ID }}:9090
 
 
