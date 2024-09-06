@@ -24,6 +24,18 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.PEM_CONTENT }}
 
+      - name: Zip build files
+        run: |
+          zip my-application.zip main index.html
+
+      - name: Upload artifact to S3
+        uses: actions/upload-artifact@v3
+        with:
+          bucket-name: oriserve-assess-1
+          region: us-east-1
+          file: my-application.zip
+          key: my-folder/my-application.zip
+          
       - name: Create temporary SSH key file
         run: |
           echo "$PEM_CONTENT" > /tmp/ssh_key
