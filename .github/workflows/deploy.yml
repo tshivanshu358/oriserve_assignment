@@ -28,13 +28,14 @@ jobs:
         run: |
           zip my-application.zip main index.html
 
-      - name: Upload artifact to S3
-        uses: actions/upload-artifact@v3
+      - name: Upload to S3
+        uses: actions/aws-s3@v2
         with:
-          bucket-name: oriserve-assess-1
-          region: us-east-1
-          file: my-application.zip
-          key: my-folder/my-application.zip
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           bucket-name: oriserve-assess-1
+           key: my-application.zip
+           file: my-application.zip
           
       - name: Create temporary SSH key file
         run: |
