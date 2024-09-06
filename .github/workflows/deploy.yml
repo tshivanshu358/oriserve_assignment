@@ -32,13 +32,6 @@ jobs:
         run: |
           zip my-application.zip main index.html
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
       - name: Deploy to CodeDeploy
         uses: sourcetoad/aws-codedeploy-action@v1.11.0
         with:
