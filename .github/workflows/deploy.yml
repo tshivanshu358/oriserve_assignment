@@ -28,27 +28,31 @@ jobs:
         run: |
           zip my-application.zip main index.html
 
-      - name: Upload to S3
-        uses: actions/aws-s3@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-           bucket-name: oriserve-assess-1
-           key: my-application.zip
-           file: my-application.zip
-          
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload to S3
+        uses: aws-actions/s3-sync@v1
+        with:
+          args: --acl public-read
+          aws-region: us-east-1
+          aws-bucket: oriserve-assess-1
+          aws-key: my-application.zip
+          src: my-application.zip
+
       - name: Create temporary SSH key file
         run: |
           echo "$PEM_CONTENT" > /tmp/ssh_key
           chmod 600 /tmp/ssh_key
 
-     
       - name: Copy and deploy build app file to EC2
         run: |
           scp -i /tmp/ssh_key -o StrictHostKeyChecking=no main ubuntu@ec2-3-84-54-107.compute-1.amazonaws.com:/home/ubuntu/
           scp -i /tmp/ssh_key -o StrictHostKeyChecking=no index.html ubuntu@ec2-3-84-54-107.compute-1.amazonaws.com:/home/ubuntu/
-
-                
 
       - name: Running application to EC2       
         run: |          
@@ -58,4 +62,4 @@ jobs:
           EOF
 
       - name: Verify deployment
-        run: curl http://ec2-3.84.54.107.compute-1.amazonaws.com:9090
+        run: curl http://ec2-3-84-54-107.compute-1.amazonaws.com:9090
