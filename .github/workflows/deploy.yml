@@ -36,13 +36,8 @@ jobs:
           aws-region: us-east-1
 
       - name: Upload to S3
-        uses: aws-actions/s3-sync@v1
-        with:
-          args: --acl public-read
-          aws-region: us-east-1
-          aws-bucket: oriserve-assess-1
-          aws-key: my-application.zip
-          src: my-application.zip
+        run: |
+          aws s3 cp my-application.zip s3://oriserve-assess-1/my-application.zip
 
       - name: Create temporary SSH key file
         run: |
