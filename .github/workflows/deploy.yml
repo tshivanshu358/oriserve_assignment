@@ -46,12 +46,12 @@ jobs:
       - name: Deploy to CodeDeploy
         uses: sourcetoad/aws-codedeploy-action@v1.11.0
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          application-name: ori-goweb
-          deployment-group-name: ori-goapplication-DG
-          file: my-application.zip
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          codedeploy_name: ori-goweb
+          codedeploy_group: ori-goapplication-DG
+          archive: s3://oriserve-assess-1/my-application.zip
      
 
      
