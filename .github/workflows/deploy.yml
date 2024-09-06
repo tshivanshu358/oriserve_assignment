@@ -39,10 +39,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Upload to S3
-        run: |
-          aws s3 cp my-application.zip s3://oriserve-assess-1/my-application.zip
-
       - name: Deploy to CodeDeploy
         uses: sourcetoad/aws-codedeploy-action@v1.11.0
         with:
