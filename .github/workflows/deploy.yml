@@ -49,7 +49,7 @@ jobs:
           codedeploy_group: ori-goapplication-DG
           archive: my-application.zip
           s3_bucket: oriserve-assess-1
-          s3_folder: /
+          
      
 
      
