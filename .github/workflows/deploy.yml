@@ -39,6 +39,16 @@ jobs:
         run: |
           aws s3 cp my-application.zip s3://oriserve-assess-1/my-application.zip
 
+      - name: Deploy to CodeDeploy
+        uses: sourcetoad/aws-codedeploy-action@v1.11.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          application-name: ori-goweb
+          deployment-group-name: ori-goapplication-DG
+          file: my-application.zip
+
       - name: Create temporary SSH key file
         run: |
           echo "$PEM_CONTENT" > /tmp/ssh_key
@@ -49,12 +59,4 @@ jobs:
           scp -i /tmp/ssh_key -o StrictHostKeyChecking=no main ubuntu@ec2-3-84-54-107.compute-1.amazonaws.com:/home/ubuntu/
           scp -i /tmp/ssh_key -o StrictHostKeyChecking=no index.html ubuntu@ec2-3-84-54-107.compute-1.amazonaws.com:/home/ubuntu/
 
-      - name: Running application to EC2       
-        run: |          
-          ssh -i /tmp/ssh_key -o StrictHostKeyChecking=no ubuntu@ec2-3-84-54-107.compute-1.amazonaws.com << EOF
-          chmod +x main
-          screen -d -m ./main       
-          EOF
-
-      - name: Verify deployment
-        run: curl http://ec2-3-84-54-107.compute-1.amazonaws.com:9090
+     
